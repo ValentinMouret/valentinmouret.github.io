@@ -1,4 +1,4 @@
-const CACHE = "boussole-v21";
+const CACHE = "boussole-v22";
 const ASSETS = [
   "./",
   "./index.html",
