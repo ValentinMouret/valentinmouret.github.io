@@ -512,7 +512,7 @@ function hydrationCard() {
       <div class="card-message">${highlightFirstTime(message)}</div>
       <div class="card-stats">
         <span class="stat-pill water-pill">🌊 ${t("totalToday", { amount: totalLabel })}</span>
-        <span class="stat-pill">${t("takes", { count: takeCount })}</span>
+        <span class="stat-pill takes-pill">${t("takes", { count: takeCount })}</span>
         <span class="stat-pill elec-pill">🧂 ${elecToday || total < 1500 ? t("elecOk") : t("elecNudge")}</span>
       </div>
       <div class="wave-bg"><div class="wave-bg-shape w1"></div><div class="wave-bg-shape w2"></div></div>
