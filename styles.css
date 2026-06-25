@@ -92,7 +92,14 @@ a {
 
 .content[data-screen="rdr"] {
   gap: 24px;
-  padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 16px);
+  padding-bottom: 0;
+}
+
+/* iOS Safari ignores padding-bottom on flex+overflow-y:auto for scroll height.
+   A real child element at the end of the content is the reliable fix. */
+.scroll-end-spacer {
+  flex-shrink: 0;
+  height: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 24px);
 }
 
 .content[data-screen="info"] {
