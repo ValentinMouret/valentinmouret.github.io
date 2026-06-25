@@ -110,6 +110,13 @@ a {
   height: calc(var(--nav-height) + var(--actions-height) + env(safe-area-inset-bottom, 0px) + 24px);
 }
 
+/* Ensure the stream is always tall enough for the home page to scroll.
+   Card + section head + spacer ≈ 390px; topbar ≈ 80px; so 100dvh - 380px
+   leaves a stream that always pushes the total content past the viewport. */
+.content[data-screen="home"] .stream {
+  min-height: calc(100dvh - 380px);
+}
+
 .content[data-screen="info"] {
   gap: 8px;
   padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 16px);
