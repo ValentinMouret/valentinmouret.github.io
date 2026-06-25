@@ -65,7 +65,7 @@ These never change with the sky. They are the semantic accent colors for entry t
 
 ### Glass surfaces
 
-Cards use `backdrop-filter: blur(12–20px)` over the sky. The `--surface` token is a semi-transparent color whose opacity ensures enough contrast between the card and the sky beneath. Bottom sheets (add flows, substance info) are always `#1B1B2E` — they are modal contexts with their own contained design.
+Cards use `backdrop-filter: blur(12–20px)` over the sky. The `--surface` token is a semi-transparent color whose opacity ensures enough contrast between the card and the sky beneath. Bottom sheets (add flows, substance info) use `var(--surface)` with `blur(24px)` — they follow the sky like everything else.
 
 ---
 

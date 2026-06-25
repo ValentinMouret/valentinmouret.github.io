@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boussole</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0F0E17;
+      --surface: #1A1A2A;
+      --surface-raised: #252538;
+      --primary: #FFBE0B;
+      --water: #3DDBD9;
+      --electrolyte: #A78BFA;
+      --substance: #FF6B6B;
+      --text: #FFFFFE;
+      --text-muted: #8888AA;
+      --radius: 20px;
+      --nav-height: 90px;
+      --actions-height: 76px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #07070F;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      padding: 32px 16px;
+    }
+
+    .phone {
+      width: 390px;
+      min-height: 844px;
+      background: var(--bg);
+      border-radius: 48px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255,255,255,0.07);
+      box-shadow:
+        0 0 0 8px #111118,
+        0 40px 120px rgba(0,0,0,0.8);
+    }
+
+    /* ─── Status bar ─── */
+    .status-bar {
+      height: 48px;
+      padding: 16px 28px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .status-time { font-size: 15px; font-weight: 600; color: var(--text); }
+    .status-icons { display: flex; gap: 6px; align-items: center; font-size: 13px; color: var(--text); }
+
+    /* ─── Top bar ─── */
+    .topbar {
+      padding: 6px 24px 14px;
+      flex-shrink: 0;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ─── Scrollable content ─── */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 20px;
+      padding-bottom: calc(var(--nav-height) + var(--actions-height) + 16px);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .content::-webkit-scrollbar { display: none; }
+
+    /* ─── Hydration card ─── */
+    .hydration-card {
+      background: linear-gradient(145deg, #091F28 0%, #0B3040 60%, #0E3D4E 100%);
+      border: 1px solid rgba(61,219,217,0.15);
+      border-radius: var(--radius);
+      padding: 20px 22px 22px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .wave-bg {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 50px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .wave-bg-shape {
+      position: absolute;
+      bottom: -12px;
+      left: -5%;
+      width: 110%;
+      height: 50px;
+      border-radius: 50%;
+    }
+    .wave-bg-shape.w1 { background: rgba(61,219,217,0.10); animation: waveSwell 4.5s ease-in-out infinite; }
+    .wave-bg-shape.w2 { background: rgba(61,219,217,0.06); bottom: -20px; animation: waveSwell 4.5s ease-in-out infinite 1.1s reverse; }
+    @keyframes waveSwell {
+      0%,100% { transform: translateX(0) scaleY(1); }
+      50%      { transform: translateX(-3%) scaleY(1.3); }
+    }
+
+    .card-eyebrow {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: var(--water);
+      opacity: 0.65;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .card-message {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 14px;
+    }
+    .card-message em { color: var(--primary); font-style: normal; }
+
+    .card-stats {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .stat-pill {
+      background: rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 5px 11px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .stat-pill.water-pill { background: rgba(61,219,217,0.10); color: var(--water); }
+    .stat-pill.elec-pill  { background: rgba(167,139,250,0.10); color: var(--electrolyte); }
+
+    /* ─── Stream ─── */
+    .section-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .stream {
+      position: relative;
+    }
+
+    .wave-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    .stream-entry {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 11px 0;
+      cursor: pointer;
+      transition: opacity 0.1s;
+    }
+    .stream-entry:active { opacity: 0.65; }
+
+    .entry-spacer {
+      width: 36px;
+      flex-shrink: 0;
+    }
+
+    .entry-body { flex: 1; min-width: 0; }
+    .entry-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .entry-detail {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .entry-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      padding-top: 3px;
+      opacity: 0.7;
+    }
+
+    .dose-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .dose-leger  { background: rgba(6,214,160,0.15);  color: #06D6A0; }
+    .dose-commun { background: rgba(255,190,11,0.15); color: var(--primary); }
+    .dose-fort   { background: rgba(255,159,28,0.15); color: #FF9F1C; }
+    .dose-lourd  { background: rgba(255,107,107,0.15); color: var(--substance); }
+
+    .stream-sep {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 0 4px 50px;
+    }
+    .stream-sep-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+      white-space: nowrap;
+      opacity: 0.5;
+    }
+    .stream-sep-line { flex: 1; height: 1px; background: rgba(255,255,255,0.05); }
+
+    .stream-now {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0 4px 50px;
+    }
+    .stream-now-label {
+      font-size: 11px;
+      color: var(--water);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      opacity: 0.9;
+    }
+    .stream-now-line { flex: 1; height: 1px; background: rgba(61,219,217,0.12); }
+
+    /* ─── Action bar ─── */
+    .action-bar {
+      position: absolute;
+      bottom: var(--nav-height);
+      left: 0; right: 0;
+      padding: 12px 20px 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: linear-gradient(to bottom, transparent, var(--bg) 28%);
+    }
+
+    .add-btn {
+      border: none;
+      border-radius: 18px;
+      padding: 14px 14px;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.12s;
+    }
+    .add-btn:active { transform: scale(0.95); }
+    .add-btn.water    { background: var(--water); }
+    .add-btn.substance { background: #C084FC; }
+
+    .add-plus  { font-size: 20px; font-weight: 700; color: rgba(0,0,0,0.65); line-height: 1; flex-shrink: 0; }
+    .add-text  { display: flex; flex-direction: column; gap: 1px; }
+    .add-label { font-size: 15px; font-weight: 700; color: rgba(0,0,0,0.85); letter-spacing: -0.2px; }
+    .add-sub   { font-size: 11px; color: rgba(0,0,0,0.45); font-weight: 500; }
+
+    /* ─── Bottom nav (3 tabs) ─── */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: var(--nav-height);
+      background: rgba(18,18,32,0.98);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: flex-start;
+      padding-top: 10px;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 0;
+      font-family: inherit;
+    }
+    .nav-icon  { font-size: 22px; line-height: 1; }
+    .nav-label { font-size: 10px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.2px; }
+    .nav-item.active .nav-label { color: var(--primary); }
+    .nav-item.active .nav-icon  { filter: drop-shadow(0 0 7px rgba(255,190,11,0.55)); }
+
+    /* ─── Sheet overlay ─── */
+    .sheet-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      pointer-events: none;
+      transition: background 0.3s ease;
+      z-index: 100;
+      border-radius: 48px;
+      overflow: hidden;
+    }
+    .sheet-overlay.open {
+      background: rgba(0,0,0,0.65);
+      pointer-events: auto;
+    }
+
+    /* ─── Bottom sheet ─── */
+    .sheet {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: #1B1B2E;
+      border-radius: 28px 28px 0 0;
+      transform: translateY(100%);
+      transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .sheet-overlay.open .sheet { transform: translateY(0); }
+
+    .sheet-handle {
+      width: 36px; height: 4px;
+      background: rgba(255,255,255,0.13);
+      border-radius: 2px;
+      margin: 14px auto 0;
+    }
+    .sheet-header {
+      padding: 16px 22px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sheet-title { font-size: 17px; font-weight: 700; color: var(--text); }
+    .sheet-step  { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+    .sheet-close {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: none;
+      color: var(--text-muted);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-family: inherit;
+    }
+    .sheet-close:active { background: rgba(255,255,255,0.12); }
+
+    .sheet-body {
+      padding: 18px 22px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Sheet step pages */
+    .step-page { display: none; flex-direction: column; gap: 18px; }
+    .step-page.active { display: flex; }
+
+    /* Type toggle */
+    .type-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .type-btn {
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 13px 12px;
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .type-btn-icon { font-size: 20px; }
+    .type-btn-text { display: flex; flex-direction: column; gap: 2px; text-align: left; }
+    .type-btn-label { font-size: 13px; font-weight: 600; color: var(--text); }
+    .type-btn-sub   { font-size: 10px; color: var(--text-muted); }
+    .type-btn.sel-water { border-color: var(--water); background: rgba(61,219,217,0.08); }
+    .type-btn.sel-elec  { border-color: var(--electrolyte); background: rgba(167,139,250,0.08); }
+
+    /* Preset grid (water amounts + substance doses share same grid style) */
+    .sheet-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .preset-btn {
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 13px 8px;
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .preset-btn.sel-water   { border-color: var(--water);  background: rgba(61,219,217,0.09); }
+    .preset-btn.sel-elec    { border-color: var(--electrolyte); background: rgba(167,139,250,0.09); }
+    .preset-btn .pval  { font-size: 15px; font-weight: 700; color: var(--text); }
+    .preset-btn .punit { font-size: 11px; color: var(--text-muted); }
+    .preset-btn.autre .pval { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+
+    /* Dose category presets (substance) */
+    .dose-preset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .dose-preset-btn {
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 13px 14px;
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .dose-preset-btn.sel { border-color: var(--primary); background: rgba(255,190,11,0.07); }
+    .dose-name  { font-size: 13px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; }
+    .dose-detail { font-size: 11px; color: var(--text-muted); }
+
+    /* Custom input */
+    .custom-row {
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+    .custom-row.vis { display: flex; }
+    .custom-input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 16px;
+      font-family: inherit;
+      color: var(--text);
+      outline: none;
+    }
+    .custom-input:focus { border-color: var(--water); }
+    .custom-unit { font-size: 14px; color: var(--text-muted); font-weight: 500; flex-shrink: 0; }
+
+    /* Time row */
+    .time-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .time-btn {
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .time-btn.sel { border-color: var(--water); background: rgba(61,219,217,0.08); }
+    .time-btn-icon  { font-size: 15px; }
+    .time-btn-label { font-size: 13px; font-weight: 600; color: var(--text); }
+
+    /* Substance grid (step 1 of substance flow) */
+    .substance-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .substance-btn {
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 13px 14px;
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      transition: border-color 0.15s, background 0.15s;
+      text-align: left;
+    }
+    .substance-btn:active { background: rgba(255,255,255,0.05); }
+    .substance-btn.sel { border-color: var(--substance); background: rgba(255,107,107,0.08); }
+    .substance-btn-icon  { font-size: 18px; flex-shrink: 0; }
+    .substance-btn-label { font-size: 13px; font-weight: 600; color: var(--text); }
+
+    /* Back button */
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0;
+      width: fit-content;
+    }
+    .back-btn:active { opacity: 0.6; }
+
+    /* Confirm button */
+    .confirm-btn {
+      border: none;
+      border-radius: 16px;
+      padding: 15px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--water);
+      color: rgba(0,0,0,0.85);
+      width: 100%;
+      transition: transform 0.12s, opacity 0.15s;
+    }
+    .confirm-btn:active   { transform: scale(0.97); }
+    .confirm-btn:disabled { opacity: 0.3; cursor: default; }
+    .confirm-btn.sub-confirm { background: #C084FC; color: rgba(0,0,0,0.85); }
+  </style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="status-bar">
+    <span class="status-time">23:47</span>
+    <div class="status-icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+  </div>
+
+  <div class="topbar">
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="14" r="12" stroke="rgba(255,190,11,0.3)" stroke-width="1.5"/>
+        <circle cx="14" cy="14" r="2" fill="#FFBE0B"/>
+        <polygon points="14,4 16,14 14,13 12,14" fill="#FFBE0B"/>
+        <polygon points="14,24 12,14 14,15 16,14" fill="rgba(255,255,255,0.25)"/>
+        <polygon points="4,14 14,12 13,14 14,16" fill="rgba(255,255,255,0.2)"/>
+        <polygon points="24,14 14,16 15,14 14,12" fill="rgba(255,255,255,0.12)"/>
+      </svg>
+      boussole
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- Hydration card -->
+    <div class="hydration-card">
+      <div class="card-eyebrow">💧 Hydratation</div>
+      <div class="card-message"><em>2h30</em> sans eau —<br>un petit verre ?</div>
+      <div class="card-stats">
+        <span class="stat-pill water-pill">🌊 2,0 L aujourd'hui</span>
+        <span class="stat-pill">5 prises</span>
+        <span class="stat-pill elec-pill">🧂 électrolytes ok</span>
+      </div>
+      <div class="wave-bg">
+        <div class="wave-bg-shape w1"></div>
+        <div class="wave-bg-shape w2"></div>
+      </div>
+    </div>
+
+    <!-- Stream -->
+    <div>
+      <div class="section-title">Activité</div>
+
+      <div class="stream" id="stream">
+        <canvas class="wave-canvas" id="waveCanvas"></canvas>
+
+        <div class="stream-sep">
+          <span class="stream-sep-label">hier · 16h</span>
+          <div class="stream-sep-line"></div>
+        </div>
+
+        <div class="stream-entry" data-type="substance">
+          <div class="entry-spacer"></div>
+          <div class="entry-body">
+            <div class="entry-name">Cannabis</div>
+            <div class="entry-detail">½ joint · fumé <span class="dose-badge dose-leger">léger</span></div>
+          </div>
+          <div class="entry-time">hier 16h20</div>
+        </div>
+
+        <div class="stream-entry" data-type="water">
+          <div class="entry-spacer"></div>
+          <div class="entry-body">
+            <div class="entry-name">Eau</div>
+            <div class="entry-detail">500 ml</div>
+          </div>
+          <div class="entry-time">hier 18h40</div>
+        </div>
+
+        <div class="stream-sep">
+          <span class="stream-sep-label">aujourd'hui · 19h</span>
+          <div class="stream-sep-line"></div>
+        </div>
+
+        <div class="stream-entry" data-type="water">
+          <div class="entry-spacer"></div>
+          <div class="entry-body">
+            <div class="entry-name">Eau</div>
+            <div class="entry-detail">750 ml</div>
+          </div>
+          <div class="entry-time">il y a 5h</div>
+        </div>
+
+        <div class="stream-entry" data-type="electrolyte">
+          <div class="entry-spacer"></div>
+          <div class="entry-body">
+            <div class="entry-name">Électrolytes</div>
+            <div class="entry-detail">1 sachet</div>
+          </div>
+          <div class="entry-time">il y a 4h30</div>
+        </div>
+
+        <div class="stream-entry" data-type="substance">
+          <div class="entry-spacer"></div>
+          <div class="entry-body">
+            <div class="entry-name">Ecstasy (MDMA)</div>
+            <div class="entry-detail">1 taz · ~120 mg <span class="dose-badge dose-commun">commun</span></div>
+          </div>
+          <div class="entry-time">il y a 4h</div>
+        </div>
+
+        <div class="stream-entry" data-type="water">
+          <div class="entry-spacer"></div>
+          <div class="entry-body">
+            <div class="entry-name">Eau</div>
+            <div class="entry-detail">500 ml</div>
+          </div>
+          <div class="entry-time">il y a 2h30</div>
+        </div>
+
+        <div class="stream-now">
+          <span class="stream-now-label">maintenant · 23h47</span>
+          <div class="stream-now-line"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Action bar -->
+  <div class="action-bar">
+    <button class="add-btn water" id="openWater">
+      <span class="add-plus">+</span>
+      <div class="add-text">
+        <span class="add-label">Eau</span>
+        <span class="add-sub">eau · électrolytes</span>
+      </div>
+    </button>
+    <button class="add-btn substance" id="openSubstance">
+      <span class="add-plus">+</span>
+      <div class="add-text">
+        <span class="add-label">Substance</span>
+        <span class="add-sub">ajouter une prise</span>
+      </div>
+    </button>
+  </div>
+
+  <!-- Bottom nav – 3 tabs -->
+  <div class="bottom-nav">
+    <button class="nav-item active">
+      <span class="nav-icon">🧭</span>
+      <span class="nav-label">Boussole</span>
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon">🎊</span>
+      <span class="nav-label">RDR</span>
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon">ℹ</span>
+      <span class="nav-label">Info</span>
+    </button>
+  </div>
+
+  <!-- ── Add Water sheet ── -->
+  <div class="sheet-overlay" id="waterOverlay">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <div class="sheet-title">Ajouter</div>
+        <button class="sheet-close" id="closeWater">✕</button>
+      </div>
+      <div class="sheet-body">
+
+        <!-- Type toggle -->
+        <div class="type-toggle">
+          <button class="type-btn sel-water" id="typeWater">
+            <span class="type-btn-icon">💧</span>
+            <div class="type-btn-text">
+              <span class="type-btn-label">Eau</span>
+              <span class="type-btn-sub">en millilitres</span>
+            </div>
+          </button>
+          <button class="type-btn" id="typeElec">
+            <span class="type-btn-icon">🧂</span>
+            <div class="type-btn-text">
+              <span class="type-btn-label">Électrolytes</span>
+              <span class="type-btn-sub">sachet · comprimé</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Water amounts -->
+        <div id="waterAmounts">
+          <div class="sheet-label">Quantité</div>
+          <div class="preset-grid" id="waterGrid">
+            <button class="preset-btn" data-val="250"><span class="pval">250</span><span class="punit">ml</span></button>
+            <button class="preset-btn" data-val="500"><span class="pval">500</span><span class="punit">ml</span></button>
+            <button class="preset-btn" data-val="750"><span class="pval">750</span><span class="punit">ml</span></button>
+            <button class="preset-btn" data-val="1000"><span class="pval">1</span><span class="punit">litre</span></button>
+            <button class="preset-btn autre" data-val="autre"><span class="pval">Autre</span></button>
+          </div>
+          <div class="custom-row" id="waterCustomRow">
+            <input class="custom-input" type="number" id="waterCustomInput" placeholder="ex. 330" min="1" max="5000">
+            <span class="custom-unit">ml</span>
+          </div>
+        </div>
+
+        <!-- Electrolyte amounts -->
+        <div id="elecAmounts" style="display:none">
+          <div class="sheet-label">Format</div>
+          <div class="preset-grid" id="elecGrid">
+            <button class="preset-btn" data-val="sachet-1"><span class="pval">1</span><span class="punit">sachet</span></button>
+            <button class="preset-btn" data-val="sachet-2"><span class="pval">2</span><span class="punit">sachets</span></button>
+            <button class="preset-btn" data-val="comprimes-1"><span class="pval">1</span><span class="punit">comprimé</span></button>
+            <button class="preset-btn" data-val="poudre"><span class="pval">Poudre</span><span class="punit"> </span></button>
+            <button class="preset-btn autre" data-val="autre"><span class="pval">Autre</span></button>
+          </div>
+        </div>
+
+        <!-- Time -->
+        <div>
+          <div class="sheet-label">Heure</div>
+          <div class="time-row">
+            <button class="time-btn sel" id="wTimeNow"><span class="time-btn-icon">⚡</span><span class="time-btn-label">Maintenant</span></button>
+            <button class="time-btn" id="wTimeOther"><span class="time-btn-icon">🕐</span><span class="time-btn-label">Autre heure</span></button>
+          </div>
+        </div>
+
+        <button class="confirm-btn" id="waterConfirm" disabled>Confirmer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Add Substance sheet ── -->
+  <div class="sheet-overlay" id="substanceOverlay">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <div>
+          <div class="sheet-title" id="subTitle">Quelle substance ?</div>
+          <div class="sheet-step" id="subStep">étape 1 sur 2</div>
+        </div>
+        <button class="sheet-close" id="closeSubstance">✕</button>
+      </div>
+      <div class="sheet-body">
+
+        <!-- Step 1: substance selection -->
+        <div class="step-page active" id="subStep1">
+          <div class="substance-grid">
+            <button class="substance-btn" data-sub="alcool"><span class="substance-btn-icon">🍺</span><span class="substance-btn-label">Alcool</span></button>
+            <button class="substance-btn" data-sub="cannabis"><span class="substance-btn-icon">🌿</span><span class="substance-btn-label">Cannabis</span></button>
+            <button class="substance-btn" data-sub="ecstasy"><span class="substance-btn-icon">💊</span><span class="substance-btn-label">Ecstasy</span></button>
+            <button class="substance-btn" data-sub="mdma"><span class="substance-btn-icon">✨</span><span class="substance-btn-label">MDMA</span></button>
+            <button class="substance-btn" data-sub="ketamine"><span class="substance-btn-icon">❄️</span><span class="substance-btn-label">Kétamine</span></button>
+            <button class="substance-btn" data-sub="cocaine"><span class="substance-btn-icon">🤍</span><span class="substance-btn-label">Cocaïne</span></button>
+            <button class="substance-btn" data-sub="lsd"><span class="substance-btn-icon">🔵</span><span class="substance-btn-label">LSD</span></button>
+            <button class="substance-btn" data-sub="champignons"><span class="substance-btn-icon">🍄</span><span class="substance-btn-label">Champignons</span></button>
+            <button class="substance-btn" data-sub="speed"><span class="substance-btn-icon">⚡</span><span class="substance-btn-label">Speed</span></button>
+            <button class="substance-btn" data-sub="3mmc"><span class="substance-btn-icon">🔴</span><span class="substance-btn-label">3-MMC</span></button>
+          </div>
+        </div>
+
+        <!-- Step 2: dose + time -->
+        <div class="step-page" id="subStep2">
+          <button class="back-btn" id="subBack">← Retour</button>
+          <div>
+            <div class="sheet-label" id="doseLabel">Dose · Ecstasy (MDMA)</div>
+            <div class="dose-preset-grid" id="doseGrid">
+              <button class="dose-preset-btn" data-dose="leger">
+                <span class="dose-name"><span class="dose-badge dose-leger">léger</span></span>
+                <span class="dose-detail">½ taz · ~60 mg</span>
+              </button>
+              <button class="dose-preset-btn" data-dose="commun">
+                <span class="dose-name"><span class="dose-badge dose-commun">commun</span></span>
+                <span class="dose-detail">1 taz · ~120 mg</span>
+              </button>
+              <button class="dose-preset-btn" data-dose="fort">
+                <span class="dose-name"><span class="dose-badge dose-fort">fort</span></span>
+                <span class="dose-detail">1½ taz · ~180 mg</span>
+              </button>
+              <button class="dose-preset-btn" data-dose="lourd">
+                <span class="dose-name"><span class="dose-badge dose-lourd">lourd</span></span>
+                <span class="dose-detail">2 taz · ~240 mg</span>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div class="sheet-label">Heure</div>
+            <div class="time-row">
+              <button class="time-btn sel" id="sTimeNow"><span class="time-btn-icon">⚡</span><span class="time-btn-label">Maintenant</span></button>
+              <button class="time-btn" id="sTimeOther"><span class="time-btn-icon">🕐</span><span class="time-btn-label">Autre heure</span></button>
+            </div>
+          </div>
+          <button class="confirm-btn sub-confirm" id="subConfirm" disabled>Confirmer</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Wave animation ──────────────────────────────────────────
+function initWave() {
+  const stream = document.getElementById('stream');
+  const canvas = document.getElementById('waveCanvas');
+  const ctx    = canvas.getContext('2d');
+
+  const COLORS = { water: '#3DDBD9', electrolyte: '#A78BFA', substance: '#FF6B6B' };
+  const AMP = 11, CENTER = 18, WAVELENGTH = 145, SPEED = 0.018;
+
+  function resize() {
+    canvas.width  = 36;
+    canvas.height = stream.scrollHeight;
+    canvas.style.width  = '36px';
+    canvas.style.height = stream.scrollHeight + 'px';
+  }
+  resize();
+
+  const entries = Array.from(stream.querySelectorAll('.stream-entry'));
+  const streamRect = stream.getBoundingClientRect();
+
+  const dots = entries.map(el => {
+    const r = el.getBoundingClientRect();
+    return {
+      y:     r.top - streamRect.top + r.height / 2,
+      color: COLORS[el.dataset.type] || COLORS.water
+    };
+  });
+
+  let phase = 0;
+
+  function getX(y) {
+    return CENTER + AMP * Math.sin(2 * Math.PI * y / WAVELENGTH + phase);
+  }
+
+  function frame() {
+    const h = canvas.height;
+    ctx.clearRect(0, 0, canvas.width, h);
+
+    // Wave line
+    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0,    'rgba(61,219,217,0.05)');
+    grad.addColorStop(0.45, 'rgba(61,219,217,0.28)');
+    grad.addColorStop(0.85, 'rgba(61,219,217,0.75)');
+    grad.addColorStop(1,    'rgba(61,219,217,0.95)');
+
+    ctx.save();
+    ctx.beginPath();
+    for (let y = 0; y <= h; y += 2) {
+      const x = getX(y);
+      y === 0 ? ctx.moveTo(x, 0) : ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = grad;
+    ctx.lineWidth   = 2.5;
+    ctx.lineCap     = 'round';
+    ctx.lineJoin    = 'round';
+    ctx.shadowBlur  = 10;
+    ctx.shadowColor = 'rgba(61,219,217,0.45)';
+    ctx.stroke();
+    ctx.restore();
+
+    // Entry dots
+    dots.forEach(dot => {
+      const x = getX(dot.y);
+
+      // Glow ring
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(x, dot.y, 9, 0, Math.PI * 2);
+      ctx.fillStyle = dot.color.replace(')', ',0.12)').replace('rgb', 'rgba');
+      ctx.fill();
+      ctx.restore();
+
+      // Dot
+      ctx.save();
+      ctx.shadowBlur  = 14;
+      ctx.shadowColor = dot.color;
+      ctx.beginPath();
+      ctx.arc(x, dot.y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = dot.color;
+      ctx.fill();
+      ctx.restore();
+
+      // Specular
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(x - 1.3, dot.y - 1.3, 1.4, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,255,255,0.65)';
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // "Now" glowing tip at bottom
+    const tipX = getX(h);
+    ctx.save();
+    ctx.shadowBlur  = 20;
+    ctx.shadowColor = 'rgba(61,219,217,0.9)';
+    ctx.beginPath();
+    ctx.arc(tipX, h - 6, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#3DDBD9';
+    ctx.fill();
+    ctx.restore();
+
+    phase -= SPEED;
+    requestAnimationFrame(frame);
+  }
+
+  frame();
+}
+
+window.addEventListener('load', initWave);
+
+
+// ── Water sheet ──────────────────────────────────────────────
+(function() {
+  const overlay   = document.getElementById('waterOverlay');
+  const openBtn   = document.getElementById('openWater');
+  const closeBtn  = document.getElementById('closeWater');
+  const confirmBtn = document.getElementById('waterConfirm');
+
+  const typeWaterBtn = document.getElementById('typeWater');
+  const typeElecBtn  = document.getElementById('typeElec');
+  const waterAmountsEl = document.getElementById('waterAmounts');
+  const elecAmountsEl  = document.getElementById('elecAmounts');
+  const waterCustomRow = document.getElementById('waterCustomRow');
+  const waterCustomInput = document.getElementById('waterCustomInput');
+
+  const wTimeNow   = document.getElementById('wTimeNow');
+  const wTimeOther = document.getElementById('wTimeOther');
+
+  let currentType = 'water', selectedVal = null;
+
+  function open()  { overlay.classList.add('open'); }
+  function close() { overlay.classList.remove('open'); reset(); }
+
+  function reset() {
+    currentType  = 'water';
+    selectedVal  = null;
+    typeWaterBtn.className = 'type-btn sel-water';
+    typeElecBtn.className  = 'type-btn';
+    waterAmountsEl.style.display = 'block';
+    elecAmountsEl.style.display  = 'none';
+    clearPresets(document.getElementById('waterGrid'));
+    clearPresets(document.getElementById('elecGrid'));
+    waterCustomRow.classList.remove('vis');
+    waterCustomInput.value = '';
+    wTimeNow.classList.add('sel');
+    wTimeOther.classList.remove('sel');
+    confirmBtn.disabled = true;
+  }
+
+  function clearPresets(grid) {
+    grid.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('sel-water','sel-elec'));
+  }
+
+  function updateConfirm() {
+    const hasVal = selectedVal && (selectedVal !== 'autre' || waterCustomInput.value.trim());
+    confirmBtn.disabled = !hasVal;
+  }
+
+  openBtn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+
+  typeWaterBtn.addEventListener('click', () => {
+    currentType = 'water';
+    typeWaterBtn.className = 'type-btn sel-water';
+    typeElecBtn.className  = 'type-btn';
+    waterAmountsEl.style.display = 'block';
+    elecAmountsEl.style.display  = 'none';
+    selectedVal = null;
+    clearPresets(document.getElementById('waterGrid'));
+    waterCustomRow.classList.remove('vis');
+    updateConfirm();
+  });
+
+  typeElecBtn.addEventListener('click', () => {
+    currentType = 'elec';
+    typeElecBtn.className  = 'type-btn sel-elec';
+    typeWaterBtn.className = 'type-btn';
+    elecAmountsEl.style.display  = 'block';
+    waterAmountsEl.style.display = 'none';
+    selectedVal = null;
+    clearPresets(document.getElementById('elecGrid'));
+    updateConfirm();
+  });
+
+  ['waterGrid','elecGrid'].forEach(id => {
+    document.getElementById(id).addEventListener('click', e => {
+      const btn = e.target.closest('.preset-btn');
+      if (!btn) return;
+      const grid = document.getElementById(id);
+      clearPresets(grid);
+      const cls = currentType === 'water' ? 'sel-water' : 'sel-elec';
+      btn.classList.add(cls);
+      selectedVal = btn.dataset.val;
+      waterCustomRow.classList.toggle('vis', selectedVal === 'autre' && currentType === 'water');
+      if (selectedVal === 'autre' && currentType === 'water') waterCustomInput.focus();
+      updateConfirm();
+    });
+  });
+
+  waterCustomInput.addEventListener('input', updateConfirm);
+
+  [wTimeNow, wTimeOther].forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      wTimeNow.classList.toggle('sel', i === 0);
+      wTimeOther.classList.toggle('sel', i === 1);
+    });
+  });
+
+  confirmBtn.addEventListener('click', close);
+})();
+
+
+// ── Substance sheet ──────────────────────────────────────────
+(function() {
+  const overlay   = document.getElementById('substanceOverlay');
+  const openBtn   = document.getElementById('openSubstance');
+  const closeBtn  = document.getElementById('closeSubstance');
+  const subConfirm = document.getElementById('subConfirm');
+  const step1     = document.getElementById('subStep1');
+  const step2     = document.getElementById('subStep2');
+  const subTitle  = document.getElementById('subTitle');
+  const subStep   = document.getElementById('subStep');
+  const backBtn   = document.getElementById('subBack');
+  const sTimeNow  = document.getElementById('sTimeNow');
+  const sTimeOther = document.getElementById('sTimeOther');
+
+  let selectedSub = null, selectedDose = null;
+
+  function open()  { overlay.classList.add('open'); }
+  function close() { overlay.classList.remove('open'); reset(); }
+
+  function reset() {
+    selectedSub  = null;
+    selectedDose = null;
+    step1.classList.add('active');
+    step2.classList.remove('active');
+    subTitle.textContent = 'Quelle substance ?';
+    subStep.textContent  = 'étape 1 sur 2';
+    document.querySelectorAll('.substance-btn').forEach(b => b.classList.remove('sel'));
+    document.querySelectorAll('.dose-preset-btn').forEach(b => b.classList.remove('sel'));
+    sTimeNow.classList.add('sel');
+    sTimeOther.classList.remove('sel');
+    subConfirm.disabled = true;
+  }
+
+  function goStep2(sub) {
+    selectedSub = sub;
+    step1.classList.remove('active');
+    step2.classList.add('active');
+    subTitle.textContent = sub.charAt(0).toUpperCase() + sub.slice(1);
+    subStep.textContent  = 'étape 2 sur 2';
+    document.getElementById('doseLabel').textContent = 'Dose · ' + subTitle.textContent;
+  }
+
+  openBtn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+  backBtn.addEventListener('click', () => {
+    step2.classList.remove('active');
+    step1.classList.add('active');
+    subTitle.textContent = 'Quelle substance ?';
+    subStep.textContent  = 'étape 1 sur 2';
+    selectedDose = null;
+    subConfirm.disabled = true;
+  });
+
+  document.querySelectorAll('.substance-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.substance-btn').forEach(b => b.classList.remove('sel'));
+      btn.classList.add('sel');
+      goStep2(btn.dataset.sub);
+    });
+  });
+
+  document.querySelectorAll('.dose-preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.dose-preset-btn').forEach(b => b.classList.remove('sel'));
+      btn.classList.add('sel');
+      selectedDose = btn.dataset.dose;
+      subConfirm.disabled = false;
+    });
+  });
+
+  [sTimeNow, sTimeOther].forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      sTimeNow.classList.toggle('sel', i === 0);
+      sTimeOther.classList.toggle('sel', i === 1);
+    });
+  });
+
+  subConfirm.addEventListener('click', close);
+})();
+</script>
+</body>
+</html>

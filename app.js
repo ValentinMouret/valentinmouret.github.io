@@ -181,7 +181,6 @@ const interactionRules = [
   rule(["alcool", "ketamine"], "Tres dangereux", "Risque de perte de conscience.", "Very dangerous", "Higher risk of losing consciousness."),
   rule(["alcool", "mdma"], "Dangereux", "Augmente la déshydratation et la toxicité.", "Dangerous", "Increases dehydration and toxicity."),
   rule(["alcool", "cocaine"], "Tres dangereux", "Forme de la cocaéthylène, risque cardiaque.", "Very dangerous", "Forms cocaethylene, increasing cardiac risk."),
-  rule(["mdma", "speed"], "Tres dangereux", "Surtension cardiovasculaire et neurotoxicité.", "Very dangerous", "Higher cardiovascular and neurotoxicity risk."),
   rule(["mdma", "cocaine"], "Tres dangereux", "Surtension cardiovasculaire.", "Very dangerous", "Higher cardiovascular strain."),
   rule(["mdma", "3mmc"], "Tres dangereux", "Syndrome sérotoninergique potentiel.", "Very dangerous", "Potential serotonin syndrome risk."),
   rule(["cannabis", "lsd"], "Dangereux", "Potentialise fortement l'expérience.", "Dangerous", "Can strongly intensify the experience.")
@@ -196,7 +195,8 @@ const substanceInfo = {
       "Très dangereux avec Kétamine et GHB/GBL",
       "Dangereux avec MDMA — augmente déshydratation et toxicité",
       "Forme de la cocaéthylène avec cocaïne — risque cardiaque"
-    ]
+    ],
+    sensations: { fr: "Tu te sentiras d'abord plus léger(e) et confiant(e) — c'est la désinhibition qui commence. Les sons et les lumières te sembleront plus amusants. Au fur et à mesure, tes mouvements deviennent moins précis, ta vision peut se flouter, et ta conscience de l'espace se brouille. Si tu commences à avoir du mal à marcher droit, à bafouiller, ou que la pièce tourne, c'est que tu as peut-être trop bu. Assieds-toi près d'une toilette et reste hydraté(e). Important : tu vas perdre une partie de ton jugement — fixe tes limites AVANT de boire, et aie quelqu'un de confiance avec toi.", en: "You'll feel lighter and more confident at first — that's the disinhibition kicking in. Sounds and lights seem more fun. As you drink more, your movements become less precise, your vision may blur, and your spatial awareness fades. If you struggle to walk straight, slur your words, or feel the room spinning, you may have drunk too much. Sit near a bathroom and stay hydrated. Important: you'll lose some judgment — set your limits BEFORE drinking, and have someone trustworthy with you." }
   },
   cannabis: {
     category: { fr: "Psychédélique", en: "Psychedelic" },
@@ -204,17 +204,20 @@ const substanceInfo = {
       { route: "Fumé", onset: "5-10 min", duration: "1-3h" },
       { route: "Comestible", onset: "20-90 min", duration: "3-6h" }
     ],
-    risks: ["Anxiété et paranoïa possibles", "Comestibles : onset lent, attention aux redoses", "Potentialise fortement LSD et champignons"]
+    risks: ["Anxiété et paranoïa possibles", "Comestibles : onset lent, attention aux redoses", "Potentialise fortement LSD et champignons"],
+    sensations: { fr: "Tes sens s'affinent — la musique te semble plus riche, les odeurs plus prononcées. Tu te sentiras plus lourd(e) mais décontracté(e). Tes pensées peuvent devenir lentes ou en boucle. Attention : le cannabis peut déclencher de l'anxiété ou de la paranoïa, surtout si tu n'as pas l'habitude. Si ça arrive, rappelle-toi que c'est temporaire, reste assis(e) dans un endroit sûr, contrôle ta respiration (inspire 4 sec, retiens 4 sec, expire 4 sec), et entouré(e) de gens de confiance. Avec les comestibles, la patience est cruciale — attends au moins 2 heures avant d'en reprendre, même si tu ne sens rien.", en: "Your senses sharpen — music sounds richer, smells more pronounced. You'll feel heavier but relaxed. Your thoughts may slow down or loop. Beware: cannabis can trigger anxiety or paranoia, especially if you're not used to it. If it happens, remember it's temporary, stay in a safe place, control your breathing (inhale 4 sec, hold 4 sec, exhale 4 sec), and surround yourself with trusted people. With edibles, patience is crucial — wait at least 2 hours before taking more, even if you feel nothing." }
   },
   ecstasy: {
     category: { fr: "Empathogène", en: "Empathogen" },
     duration: [{ route: "Oral", onset: "30-60 min", duration: "3-6h" }],
-    risks: ["Composition inconnue — teste si possible", "Hyperthermie possible", "Boire 250-500 ml/h si tu bouges", "Redose risquée avant 3h"]
+    risks: ["Composition inconnue — teste si possible", "Hyperthermie possible", "Boire 250-500 ml/h si tu bouges", "Redose risquée avant 3h"],
+    sensations: { fr: "Tu vas sentir une montée progressive de bien-être — progressivement tu deviens plus social(e), plus connecté(e) aux autres, tu ressens de l'empathie intense. Ton corps te plaît — tu veux danser ou bouger. La transpiration peut être abondante. Tes muscles pourraient se crisper légèrement (particulièrement la mâchoire — attention à ton dentier si tu en as un). La première demi-heure peut être inconfortable ou donner de l'anxiété. Si tu transpires beaucoup, change de vêtements humides, reste hydraté(e) (250–500 ml/h), et prends des pauses régulières loin de la piste de danse. Si tu sens une trop forte augmentation de ta température corporelle ou des palpitations, va immédiatement en zone froide et demande de l'aide.", en: "You'll feel a gradual rise in well-being — progressively becoming more social, more connected to others, feeling intense empathy. You like your body — you want to dance or move. You might sweat heavily. Your muscles could tighten slightly (especially your jaw — watch out for teeth grinding). The first half-hour might feel uncomfortable or anxious. If you sweat a lot, change out of wet clothes, stay hydrated (250–500 ml/h), and take regular breaks away from the dance floor. If your body temperature spikes or you feel heart palpitations, go to a cool area immediately and ask for help." }
   },
   mdma: {
     category: { fr: "Empathogène", en: "Empathogen" },
     duration: [{ route: "Oral", onset: "30-60 min", duration: "3-6h" }],
-    risks: ["Hyperthermie — pauses régulières", "Déshydratation ou excès d'eau", "Très dangereux avec Speed et 3-MMC", "Neurotoxicité potentielle à hautes doses répétées"]
+    risks: ["Hyperthermie — pauses régulières", "Déshydratation ou excès d'eau", "Très dangereux avec 3-MMC", "Neurotoxicité potentielle à hautes doses répétées"],
+    sensations: { fr: "Tu sentiras une montée progressive : d'abord une légère euphorie, puis une vague de bien-être physique et émotionnel. Tes sens s'aiguisent — les sons et les textures deviennent plus vifs. Tu pourrais transpirer, avoir les pupilles dilatées, ou grimacer involontairement. Si tu sens une montée d'anxiété au début, respire profondément — ça passe généralement en 20 min. Si tu sens ta température corporelle monter trop ou que tu commences à avoir un malaise, va immédiatement dans un endroit frais, assieds-toi, bois de l'eau lentement, et fais signe à quelqu'un de confiance.", en: "You'll feel a gradual rush: first light euphoria, then a wave of physical and emotional well-being. Your senses sharpen — sounds and textures become vivid. You might sweat, have dilated pupils, or grimace involuntarily. If you feel initial anxiety, breathe deeply — it usually passes in 20 min. If your body temperature rises too much or you feel unwell, go to a cool place immediately, sit down, drink water slowly, and signal someone you trust." }
   },
   ketamine: {
     category: { fr: "Dissociatif", en: "Dissociative" },
@@ -222,7 +225,8 @@ const substanceInfo = {
       { route: "Sniffé", onset: "5-15 min", duration: "45-90 min" },
       { route: "Oral", onset: "15-25 min", duration: "1-2h" }
     ],
-    risks: ["Très dangereux avec alcool", "K-hole possible à forte dose", "Tolérance rapide", "Dépresseur du système nerveux central"]
+    risks: ["Très dangereux avec alcool", "K-hole possible à forte dose", "Tolérance rapide", "Dépresseur du système nerveux central"],
+    sensations: { fr: "Tu vas te sentir détaché(e) de ton corps — comme flotter ou observer la scène depuis l'extérieur. Les douleurs disparaissent. À faible dose, c'est léger et agréable. À dose plus élevée, la distorsion devient intense : le temps ralentit ou s'efface, les sons se déforment. À très hautes doses tu peux entrer dans un k-hole : tu ne peux presque plus bouger, tu es complètement détaché(e) du réel, mais conscient(e). C'est généralement inoffensif mais très désorienting. IMPORTANT : reste assis(e) à l'écart de la foule avant d'essayer, aie quelqu'un de confiance à proximité, et ne bouge pas si tu ne peux pas. Évite absolument de conduire ou nager. Si tu paniques dans un k-hole, rappelle-toi que c'est temporaire et tu récupéreras bientôt.", en: "You'll feel detached from your body — like floating or watching the scene from outside. Pain disappears. At low doses, it's light and pleasant. At higher doses, distortion becomes intense: time slows or vanishes, sounds warp. At very high doses you can enter a k-hole: you can barely move, you're completely disconnected from reality but conscious. It's usually harmless but very disorienting. IMPORTANT: sit away from the crowd before trying it, have someone trustworthy nearby, and don't move if you can't. Never drive or swim. If you panic in a k-hole, remember it's temporary and you'll recover soon." }
   },
   cocaine: {
     category: { fr: "Stimulant", en: "Stimulant" },
@@ -230,17 +234,20 @@ const substanceInfo = {
       { route: "Sniffé", onset: "1-5 min", duration: "20-45 min" },
       { route: "Fumé", onset: "<1 min", duration: "5-15 min" }
     ],
-    risks: ["Redose compulsive fréquente", "Très dangereux avec alcool", "Très dangereux avec MDMA", "Risque cardiaque à hautes doses"]
+    risks: ["Redose compulsive fréquente", "Très dangereux avec alcool", "Très dangereux avec MDMA", "Risque cardiaque à hautes doses"],
+    sensations: { fr: "L'effet est ultra-rapide et ultra-intense : tu te sentiras invulnérable, parfait(e), plein(e) d'énergie. Le high est extraordinaire mais fugace — généralement 15–30 min seulement. Ensuite tu veux redoser immédiatement. C'est le piège : la cocaïne crée un cycle redose très compulsif. Si tu commences à sentir des palpitations, une accélération du cœur très rapide, ou une anxiété intense, ARRÊTE. Demande de l'aide médicale si le cœur s'accélère dangereusement. Ne redose pas rapidement — attends au moins 30–45 min. Le lendemain tu seras épuisé(e) et déprimé(e). Attention : mixer avec l'alcool crée une toxine cardiaque (cocaéthylène) très dangereuse.", en: "The effect is ultra-fast and ultra-intense: you'll feel invincible, perfect, full of energy. The high is extraordinary but fleeting — usually only 15–30 min. Then you want to redose immediately. That's the trap: cocaine creates a very compulsive redose cycle. If you start feeling heart palpitations, very rapid heartbeat, or intense anxiety, STOP. Seek medical help if your heart accelerates dangerously. Don't redose quickly — wait at least 30–45 min. Tomorrow you'll be exhausted and depressed. Warning: mixing with alcohol creates a very dangerous heart toxin (cocaethylene)." }
   },
   lsd: {
     category: { fr: "Psychédélique", en: "Psychedelic" },
     duration: [{ route: "Oral", onset: "30-90 min", duration: "8-12h" }],
-    risks: ["Bad trip possible — set & setting essentiels", "Ne pas redoser trop tôt", "Potentialisé par cannabis", "Durée longue — prévoir 12h"]
+    risks: ["Bad trip possible — set & setting essentiels", "Ne pas redoser trop tôt", "Potentialisé par cannabis", "Durée longue — prévoir 12h"],
+    sensations: { fr: "La montée est progressive — tu commenceras à sentir des changements subtils, une légère euphorie, puis la réalité se distordra lentement. Les couleurs deviennent plus vives, les motifs bougent, tes pensées deviennent associatives et imprévisibles. À plus hautes doses, les hallucinations deviennent très visuelles. Une bad trip peut survenir si tu es anxieux(se) ou mal à l'aise dans l'environnement : paranoia, boucles de pensées négatives, panique. C'est la raison pour laquelle ton état d'esprit (set) et ton environnement (setting) sont CRUCIAUX. Si tu commences à stresser, va dans un endroit calme, change d'environnement, parle à quelqu'un de confiance. La durée est très longue — 8–12h — donc planifie ta soirée sans obligations importantes. N'essaie pas de conduire. Si tu paniques, rappelle-toi que ce n'est que temporaire.", en: "The come-up is gradual — you'll start feeling subtle changes, light euphoria, then reality slowly distorts. Colors become vivid, patterns move, your thoughts become associative and unpredictable. At higher doses, hallucinations become very visual. A bad trip can happen if you're anxious or uncomfortable in your environment: paranoia, negative thought loops, panic. That's why your mindset (set) and environment (setting) are CRUCIAL. If you start stressing, go to a calm place, change your surroundings, talk to someone you trust. Duration is very long — 8–12h — so plan your evening without major obligations. Don't try to drive. If you panic, remember it's only temporary." }
   },
   champignons: {
     category: { fr: "Psychédélique", en: "Psychedelic" },
     duration: [{ route: "Oral", onset: "20-60 min", duration: "4-6h" }],
-    risks: ["Anxiété et confusion possibles", "Set & setting critiques", "Potentialisé par cannabis"]
+    risks: ["Anxiété et confusion possibles", "Set & setting critiques", "Potentialisé par cannabis"],
+    sensations: { fr: "Tu seras envahi(e) par des pensées profondes et introspectives — le monde extérieur s'efface un peu et tes émotions remontent à la surface. Les hallucinations commencent légères (motifs qui bougent) puis deviennent plus intenses : géométries fractales, dissolution des limites entre toi et ton environnement. À hautes doses, l'expérience devient très intense et peut être écrasante. Tu pourrais te sentir vulnérable émotionnellement — c'est normal et c'est le but. Si tu te sens paniqué(e) ou dépassé(e), reste couché(e), respire profondément, rappelle-toi que c'est temporaire, et demande du soutien. Le crash d'anxiété peut être puissant à hautes doses. Espace-toi suffisamment de responsabilités. Aie un espace calme, sombre, et une personne de confiance à proximité.", en: "You'll be flooded with deep, introspective thoughts — the outside world fades a bit and your emotions rise to the surface. Hallucinations start light (moving patterns) then become more intense: fractal geometries, dissolving boundaries between you and your surroundings. At high doses, the experience becomes very intense and can feel overwhelming. You might feel emotionally vulnerable — that's normal and part of it. If you feel panicked or overwhelmed, lie down, breathe deeply, remember it's temporary, and ask for support. Anxiety can spike at high doses. Give yourself space from responsibilities. Have a quiet, dark space and a trusted person nearby." }
   },
   speed: {
     category: { fr: "Stimulant", en: "Stimulant" },
@@ -248,7 +255,8 @@ const substanceInfo = {
       { route: "Oral", onset: "30-60 min", duration: "4-8h" },
       { route: "Sniffé", onset: "5-10 min", duration: "3-5h" }
     ],
-    risks: ["Très dangereux avec MDMA", "Crash important après les effets", "Troubles du sommeil prolongés"]
+    risks: ["Crash brutal après — fatigue extrême, dépression possible", "Surtension cardiovasculaire à hautes doses", "Forte tendance au redosage — risque de consommation compulsive"],
+    sensations: { fr: "Tu sentiras une montée d'énergie et de clarté mentale. Ton cœur s'accélère légèrement, tu te sens invulnérable et super social. La fatigue disparaît — ce qui te permet de danser ou de rester actif pendant longtemps. Attention : cette impression d'énergie infinie est une illusion. Ton corps se fatigue réellement. Si tu sens que ton cœur s'accélère trop, que tu as des tremblements, ou que tu sèches la bouche extrêmement, prends une pause, assieds-toi, bois de l'eau. Le lendemain tu seras très fatigué(e) — anticipe un repos complet.", en: "You'll feel a rush of energy and mental clarity. Your heart races slightly, you feel invincible and super social. Fatigue disappears — letting you dance or stay active for hours. Warning: this feeling of infinite energy is an illusion. Your body is actually tiring out. If your heart races too much, you shake, or you're extremely dry-mouthed, take a break, sit down, drink water. Tomorrow you'll be exhausted — plan for full rest." }
   },
   "3mmc": {
     category: { fr: "Stimulant · Empathogène", en: "Stimulant · Empathogen" },
@@ -256,7 +264,8 @@ const substanceInfo = {
       { route: "Oral", onset: "20-40 min", duration: "2-4h" },
       { route: "Sniffé", onset: "5-15 min", duration: "1-2h" }
     ],
-    risks: ["Très forte envie de redoser", "Très dangereux avec MDMA", "Risque cardiovasculaire à hautes doses"]
+    risks: ["Très forte envie de redoser", "Très dangereux avec MDMA", "Risque cardiovasculaire à hautes doses"],
+    sensations: { fr: "Tu te sentiras rapidement boosté(e) : euphorie, énergie, forte envie de parler et de socialiser. C'est comme une version courte du MDMA. Le problème : la durée est courte (2–4h) donc tu repars en crash rapidement, et c'est extrêmement addictif mentalement. L'envie de redoser est compulsive — beaucoup de gens finissent par en reprendre plusieurs fois dans la nuit. Si tu commences à sentir ton cœur s'emballer, de la paranoia, ou de l'anxiété intense, arrête complètement. Fixe-toi une limite AVANT de commencer (par exemple, une seule prise) et aie quelqu'un qui peut te dire non si tu tries de redoser. Le lendemain tu seras très fatigué(e) et déprimé(e). La 3-MMC est neurotoxique répétée — évite les usages fréquents.", en: "You'll quickly feel boosted: euphoria, energy, strong urge to talk and socialize. It's like a shorter version of MDMA. The problem: the duration is short (2–4h) so you come down quickly, and it's extremely mentally addictive. The urge to redose is compulsive — many people end up taking it multiple times in one night. If you start feeling your heart racing, paranoia, or intense anxiety, stop completely. Set a limit BEFORE you start (like one dose only) and have someone who can tell you 'no' if you try to redose. Tomorrow you'll be exhausted and depressed. 3-MMC is neurotoxic with repeated use — avoid frequent use." }
   }
 };
 
@@ -264,7 +273,8 @@ let state = {
   lang: localStorage.getItem(LANG_KEY) || "fr",
   logs: [],
   selectedEntry: null,
-  lastWarning: null
+  lastWarning: null,
+  pendingRdrSubstance: null
 };
 
 let dbPromise;
@@ -390,9 +400,7 @@ function seedLogs() {
 }
 
 function prototypeNow() {
-  const date = new Date();
-  date.setHours(23, 47, 0, 0);
-  return date;
+  return new Date();
 }
 
 function prototypeDate(dayOffset, hours, minutes) {
@@ -453,7 +461,6 @@ function getRoute() {
 
 function render() {
   document.documentElement.lang = state.lang;
-  $("#statusTime").textContent = "23:47";
 
   const route = getRoute();
   $("#app").dataset.screen = route.name;
@@ -556,6 +563,11 @@ function renderRdr() {
       </div>
     </section>
   `;
+  if (state.pendingRdrSubstance) {
+    const id = state.pendingRdrSubstance;
+    state.pendingRdrSubstance = null;
+    requestAnimationFrame(() => openRdrInfo(id));
+  }
 }
 
 function rdrSubstanceName(id) {
@@ -567,18 +579,9 @@ function renderInfo() {
   $("#app").innerHTML = `
     <div class="section-label">${state.lang === "fr" ? "À propos" : "About"}</div>
     <section class="about-card">
-      <div class="about-logo">
-        <svg width="18" height="18" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-          <circle cx="14" cy="14" r="12" stroke="rgba(255,190,11,0.4)" stroke-width="1.5"/>
-          <circle cx="14" cy="14" r="2" fill="#FFBE0B"/>
-          <polygon points="14,4 16,14 14,13 12,14" fill="#FFBE0B"/>
-          <polygon points="14,24 12,14 14,15 16,14" fill="rgba(255,255,255,0.3)"/>
-        </svg>
-        Boussole
-      </div>
-      <div class="about-text about-lead">${state.lang === "fr" ? "Profite à fond. Reste prudent·e. Veille sur les autres." : "Have fun. Stay aware. Look out for others."}</div>
-      <div class="about-text">${state.lang === "fr" ? "Une boussole pour naviguer ta nuit. Suivi d'hydratation, réduction des risques, infos substances. Tout reste sur ton téléphone — pas de compte, pas de serveur." : "A compass for navigating your night. Hydration tracking, harm reduction, substance info. Everything stays on your phone — no account, no server."}</div>
-      <div class="about-text">${state.lang === "fr" ? "Cette app ne remplace pas un professionnel de santé. En cas de doute, appelle le 15." : "This app does not replace medical advice. If in doubt, call local emergency services."}</div>
+      <div class="about-text about-lead">${state.lang === "fr" ? "Profite à fond. Reste prudent·e. Veille sur les autres ! ✨" : "Have fun. Stay aware. Look out for others! ✨"}</div>
+      <div class="about-text">${state.lang === "fr" ? "Une boussole pour naviguer ton festival. Tu peux suivre ton hydratation et tes prises. Pour un voyage plus safe, tu peux trouver les effets, doses approximatives et contre-indications. Les données ne quittent pas ton téléphone." : "A compass for navigating your festival. For a safer journey, you can find the effects, approximative doses, and counter-indications. Your data does not leave your phone. ."}</div>
+      <div class="about-text">${state.lang === "fr" ? "Cette app ne remplace pas un professionnel de santé. En cas de doute, rapproche toi de l'organisation ou appelle le 15." : "This app does not replace medical advice. If in doubt, contact the staff or call local emergency services."}</div>
       <div class="about-version">v1.0.0 · Open source · ${state.lang === "fr" ? "Fait avec ❤️ pour la fête" : "Made with ❤️ for safer parties"}</div>
     </section>
 
@@ -653,10 +656,12 @@ function renderInfo() {
 
 function renderSubstancePage(id) {
   const sub = substances[id];
+  const info = substanceInfo[id];
   if (!sub) {
     location.hash = "#/rdr";
     return;
   }
+  const sensations = info?.sensations?.[state.lang] || "";
   $("#app").innerHTML = `
     <article class="substance-page screen-card">
       <a class="back-btn" href="#/rdr">← ${t("back")}</a>
@@ -664,9 +669,10 @@ function renderSubstancePage(id) {
       <p>${sub.route} · ${sub.onset} · ${sub.duration}</p>
       <ul class="detail-list">
         <li><strong>${t("effects")}</strong><p>${sub.effects}</p></li>
+        ${sensations ? `<li><strong>${state.lang === "fr" ? "Ce que tu vas ressentir" : "What you might feel"}</strong><p>${sensations}</p></li>` : ""}
         <li><strong>${t("duration")}</strong><p>${sub.onset} onset · ${sub.duration}</p></li>
         <li><strong>${t("dosage")}</strong><p>${sub.doses.map((item) => `${labelForDose(item.key)}: ${item.label[state.lang]} (${item.detail[state.lang]})`).join(" · ")}</p></li>
-        <li><strong>${t("risks")}</strong><p>${sub.risks}</p></li>
+        <li><strong>${t("risks")}</strong><p>${(info?.risks || []).join(" · ") || sub.risks}</p></li>
         <li><strong>${t("interactionsTitle")}</strong><p>${sub.interactions}</p></li>
       </ul>
       <p><a class="source-link" href="${sub.source}" target="_blank" rel="noreferrer">${t("sourceLink")}</a></p>
@@ -764,8 +770,7 @@ function timeSeparator(iso) {
 }
 
 function clock(date) {
-  void date;
-  return "23:47";
+  return `${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`;
 }
 
 function relativeLabel(date) {
@@ -798,7 +803,7 @@ function renderSheetRoot() {
           <div class="sheet-title" id="waterTitle">${t("add")}</div>
           <button class="sheet-close" data-action="close-sheet" aria-label="Fermer">x</button>
         </div>
-        <form class="sheet-body" data-form="water">
+        <form class="sheet-body" data-form="water" novalidate>
           <div class="type-toggle">
             <button type="button" class="type-btn sel-water" data-water-type="water"><span class="type-btn-icon">💧</span><span class="type-btn-text"><span class="type-btn-label">${t("water")}</span><span class="type-btn-sub">ml</span></span></button>
             <button type="button" class="type-btn" data-water-type="electrolyte"><span class="type-btn-icon">🧂</span><span class="type-btn-text"><span class="type-btn-label">${t("electrolytes")}</span><span class="type-btn-sub">sachet · comprimé</span></span></button>
@@ -834,18 +839,27 @@ function renderSheetRoot() {
           </div>
           <button class="sheet-close" data-action="close-sheet" aria-label="Fermer">x</button>
         </div>
-        <form class="sheet-body" data-form="substance">
+        <form class="sheet-body" data-form="substance" novalidate>
           <div class="step-page active" data-sub-step="1">
             <div class="substance-grid">
-              ${Object.entries(substances).map(([id, sub]) => `<button type="button" class="substance-btn" data-substance="${id}"><span class="substance-btn-icon">${sub.icon}</span><span class="substance-btn-label">${sub.name[state.lang]}</span></button>`).join("")}
+              ${Object.entries(substances).map(([id, sub]) => {
+                const warn = interactionForSubstanceId(id);
+                return `<button type="button" class="substance-btn${warn ? " has-interaction" : ""}" data-substance="${id}">
+                  <span class="substance-btn-icon">${sub.icon}</span>
+                  <span class="substance-btn-label">${sub.name[state.lang]}</span>
+                  ${warn ? `<span class="substance-warn-badge">${warn.level.fr === "Tres dangereux" ? "🔴" : "🟠"}</span>` : ""}
+                </button>`;
+              }).join("")}
             </div>
           </div>
           <div class="step-page" data-sub-step="2">
+            <div id="substanceInteractionWarning"></div>
             <div>
               <div class="sheet-label" id="doseLabel">${t("dose")}</div>
               <div class="dose-preset-grid" id="doseGrid"></div>
             </div>
             ${timePicker("substance")}
+            <button type="button" class="rdr-substance-link" id="rdrSubstanceLink" data-action="open-rdr-from-sheet"></button>
             <button type="submit" class="confirm-btn sub-confirm" disabled>${t("confirm")}</button>
           </div>
         </form>
@@ -870,6 +884,10 @@ function renderSheetRoot() {
           <div>
             <div class="sheet-label">${t("effects")}</div>
             <div class="info-text" id="infoEffects"></div>
+          </div>
+          <div id="sensationsContainer">
+            <div class="sheet-label">${state.lang === "fr" ? "Ce que tu vas ressentir" : "What you might feel"}</div>
+            <div class="info-text" id="infoSensations"></div>
           </div>
           <div>
             <div class="sheet-label">${t("duration")}</div>
@@ -935,6 +953,13 @@ function openRdrInfo(id) {
   $("#infoHeroName").textContent = rdrSubstanceName(id);
   $("#infoHeroCat").textContent = info.category[state.lang];
   $("#infoEffects").textContent = sub.effects;
+  const sensationsText = info.sensations?.[state.lang] || "";
+  if (sensationsText) {
+    $("#infoSensations").textContent = sensationsText;
+    $("#infoSensations").parentElement.style.display = "block";
+  } else {
+    $("#infoSensations").parentElement.style.display = "none";
+  }
   $("#infoDuration").innerHTML = info.duration.map((item) => `
     <div class="duration-row">
       <span class="duration-route">${item.route}</span>
@@ -974,6 +999,23 @@ function selectTimeButton(button) {
   const [scope, kind] = button.dataset.time.split(":");
   $$(`[data-time^="${scope}:"]`).forEach((item) => item.classList.toggle("sel", item === button));
   $(`[data-time-custom="${scope}"]`)?.classList.toggle("vis", kind === "other");
+}
+
+function interactionForSubstanceId(substanceId) {
+  const sub = substances[substanceId];
+  const currentIds = [substanceId, sub?.family].filter(Boolean);
+  const recent = state.logs.filter((item) => {
+    if (item.type !== "substance") return false;
+    return Date.now() - new Date(item.occurredAt).getTime() <= 12 * 60 * 60 * 1000;
+  });
+  for (const item of recent) {
+    const previousIds = [item.substanceId, item.family].filter(Boolean);
+    const combined = new Set([...currentIds, ...previousIds]);
+    for (const ruleItem of interactionRules) {
+      if (ruleItem.ids.every((id) => combined.has(id))) return ruleItem;
+    }
+  }
+  return null;
 }
 
 function interactionFor(entry) {
@@ -1087,6 +1129,12 @@ document.addEventListener("click", async (event) => {
   if (target.dataset.action === "open-rdr-info") openRdrInfo(target.dataset.infoSubstance);
   if (target.dataset.action === "close-sheet") closeSheets();
   if (target.dataset.action === "close-rdr-info") closeSheets();
+  if (target.dataset.action === "open-rdr-from-sheet") {
+    state.pendingRdrSubstance = target.dataset.substanceId;
+    closeSheets();
+    window.clearTimeout(sheetResetTimer); // cancel the renderSheetRoot timer — render() will rebuild sheets
+    window.location.hash = "#/rdr";
+  }
   if (target.dataset.action === "open-clear-confirm") $("#clearConfirmOverlay")?.classList.add("open");
   if (target.dataset.action === "close-clear-confirm") $("#clearConfirmOverlay")?.classList.remove("open");
   if (target.dataset.action === "confirm-clear-data") {
@@ -1153,10 +1201,27 @@ document.addEventListener("click", async (event) => {
         <span class="dose-detail">${item.label[state.lang]} · ${item.detail[state.lang]}</span>
       </button>
     `).join("");
+
+    const substanceId = target.dataset.substance;
+    const warning = interactionForSubstanceId(substanceId);
+    const warningEl = $("#substanceInteractionWarning");
+    if (warning) {
+      const isDangerous = warning.level.fr === "Tres dangereux";
+      warningEl.innerHTML = `<div class="interaction-warning-card ${isDangerous ? "level-tres-dangereux" : "level-dangereux"}">
+        <strong>${isDangerous ? "🔴" : "🟠"} ${warning.level[state.lang]}</strong>
+        <p>${warning.text[state.lang]}</p>
+      </div>`;
+    } else {
+      warningEl.innerHTML = "";
+    }
+
+    const rdrLink = $("#rdrSubstanceLink");
+    rdrLink.textContent = state.lang === "fr" ? "Voir dans RDR →" : "See in RDR →";
+    rdrLink.dataset.substanceId = substanceId;
   }
 
   if (target.dataset.action === "sub-back") {
-    const form = target.closest("[data-form='substance']");
+    const form = $("#substanceOverlay [data-form='substance']");
     $("[data-sub-step='2']", form).classList.remove("active");
     $("[data-sub-step='1']", form).classList.add("active");
     $(".sheet-back", $("#substanceOverlay")).classList.add("is-hidden");
