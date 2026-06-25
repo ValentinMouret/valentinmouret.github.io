@@ -29,7 +29,7 @@ Read `PRD.md` for full product requirements and `DESIGN.md` for design decisions
 ├── index.html                 ← PWA shell (127 lines): sky engine, nav, main container
 ├── app.js                     ← entire app logic (1286 lines)
 ├── styles.css                 ← all UI styling (1576 lines)
-├── sw.js                      ← Service Worker, cache-first (41 lines)
+├── sw.js                      ← Service Worker, network-first (55 lines)
 ├── manifest.webmanifest       ← PWA installability metadata
 ├── assets/icon.svg            ← compass icon (SVG)
 ├── CLAUDE.md                  ← symlink → AGENTS.md (loaded as project context)
@@ -239,10 +239,10 @@ Do not hardcode `--bg`, `--surface`, `--text`, or `--text-muted` — these are s
 
 ## Service Worker
 
-`sw.js` (41 lines) uses a **cache-first** strategy:
-- Cache version: `"boussole-v20"` — bump this whenever the asset list changes
+`sw.js` uses a **network-first** strategy for same-origin assets and **cache-first** for external resources (fonts):
+- Cache version: `"boussole-v21"` — **bump this whenever you add a new asset to the precache list** (e.g. when extracting substances to a JSON file). Changing JS/CSS/HTML does NOT require a version bump since network-first always fetches fresh.
 - Precached assets: `./`, `./index.html`, `./styles.css`, `./app.js`, `./manifest.webmanifest`, `./assets/icon.svg`
-- Navigation requests fall back to cached `index.html`
+- Network-first means installed PWAs (e.g. on iPhone) always load the latest code as long as they have a connection; the cache is only used offline.
 
 ---
 
