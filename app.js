@@ -169,7 +169,7 @@ const substances = {
     dose("fort", "~50 mg", "oral", "strong", "~50 mg", "oral"),
     dose("lourd", "75+ mg", "oral", "heavy", "75+ mg", "oral")
   ], "10-60 min", "6-10 h", "Stimulation, endurance, baisse de fatigue.", "Tension cardiaque, mâchoire, insomnie, redoses.", "Évite MDMA et autres stimulants.", "https://psychonautwiki.org/wiki/Amphetamine"),
-  "3mmc": substance(":3:", "3-MMC", "3-MMC", "oral / sniffé", [
+  "3mmc": substance("3️⃣", "3-MMC", "3-MMC", "oral / sniffé", [
     dose("leger", "75 mg", "oral", "light", "75 mg", "oral"),
     dose("commun", "150 mg", "oral", "common", "150 mg", "oral"),
     dose("fort", "250 mg", "oral", "strong", "250 mg", "oral"),
@@ -551,6 +551,7 @@ function renderRdr() {
         }).join("")}
       </div>
     </section>
+    <div class="scroll-end-spacer"></div>
   `;
   if (state.pendingRdrSubstance) {
     const id = state.pendingRdrSubstance;
