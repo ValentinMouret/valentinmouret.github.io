@@ -482,6 +482,7 @@ function renderHome() {
       ${streamMarkup(sortedLogs())}
     </section>
     ${state.lastWarning ? warningMarkup(state.lastWarning) : ""}
+    <div class="scroll-end-spacer"></div>
   `;
 }
 
