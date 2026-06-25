@@ -1049,28 +1049,25 @@ function initWave() {
   const wavelength = 145;
   let phase = 0;
 
-  function resize() {
-    const h = Math.max(stream.scrollHeight, 160);
-    canvas.width = 36;
-    canvas.height = h;
-    canvas.style.height = `${h}px`;
-  }
+  // Read layout once at init — never inside the animation loop.
+  // Calling getBoundingClientRect / scrollHeight on every frame forces the
+  // iOS compositor to sync with the main thread during scroll, which aborts
+  // momentum and causes the snap-back bug.
+  const h = Math.max(stream.scrollHeight, 160);
+  canvas.width = 36;
+  canvas.height = h;
+  canvas.style.height = `${h}px`;
 
-  function dots() {
-    const streamRect = stream.getBoundingClientRect();
-    return $$(".stream-entry", stream).map((el) => {
-      const rect = el.getBoundingClientRect();
-      return { y: rect.top - streamRect.top + rect.height / 2, color: colors[el.dataset.type] || colors.water };
-    });
-  }
+  const dotData = $$(".stream-entry", stream).map((el) => ({
+    y: el.offsetTop + el.offsetHeight / 2,
+    color: colors[el.dataset.type] || colors.water,
+  }));
 
   function xFor(y) {
     return center + amp * Math.sin((2 * Math.PI * y) / wavelength + phase);
   }
 
   function frame() {
-    resize();
-    const h = canvas.height;
     ctx.clearRect(0, 0, canvas.width, h);
     const grad = ctx.createLinearGradient(0, 0, 0, h);
     grad.addColorStop(0, "rgba(61,219,217,0.05)");
@@ -1092,7 +1089,7 @@ function initWave() {
     ctx.stroke();
     ctx.restore();
 
-    dots().forEach((dot) => {
+    dotData.forEach((dot) => {
       const x = xFor(dot.y);
       ctx.save();
       ctx.beginPath();
