@@ -389,24 +389,20 @@ async function clearLogs() {
 
 function seedLogs() {
   if (state.logs.length || localStorage.getItem(SEED_KEY)) return;
+  const now = new Date();
   state.logs = [
-    substanceEntry("cannabis", substances.cannabis.doses[0], prototypeDate(-1, 16, 20)),
-    waterEntry(500, prototypeDate(-1, 18, 40)),
-    waterEntry(750, prototypeDate(0, 18, 47)),
-    electrolyteEntry("1 sachet", prototypeDate(0, 19, 17)),
-    substanceEntry("ecstasy", substances.ecstasy.doses[1], prototypeDate(0, 19, 47)),
-    waterEntry(500, prototypeDate(0, 21, 17))
+    substanceEntry("cannabis", substances.cannabis.doses[0], offsetDate(now, -22 * 60)),
+    waterEntry(500, offsetDate(now, -(19 * 60 + 40))),
+    waterEntry(750, offsetDate(now, -5 * 60)),
+    electrolyteEntry("1 sachet", offsetDate(now, -(4 * 60 + 30))),
+    substanceEntry("ecstasy", substances.ecstasy.doses[1], offsetDate(now, -4 * 60)),
+    waterEntry(500, offsetDate(now, -(2 * 60 + 30)))
   ];
 }
 
-function prototypeNow() {
-  return new Date();
-}
-
-function prototypeDate(dayOffset, hours, minutes) {
-  const date = prototypeNow();
-  date.setDate(date.getDate() + dayOffset);
-  date.setHours(hours, minutes, 0, 0);
+function offsetDate(reference, minutesOffset) {
+  const date = new Date(reference);
+  date.setMinutes(date.getMinutes() + minutesOffset, 0, 0);
   return date;
 }
 
@@ -492,15 +488,14 @@ function renderHome() {
 function hydrationCard() {
   const waterLogs = sortedLogs((entry) => entry.type === "water");
   const lastWater = waterLogs[waterLogs.length - 1];
-  const now = isPrototypeSeedState() ? prototypeNow() : new Date();
+  const now = new Date();
   const todayStart = new Date(now);
   todayStart.setHours(0, 0, 0, 0);
   const todayWater = waterLogs.filter((entry) => new Date(entry.occurredAt) >= todayStart);
   const total = todayWater.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
   const elecToday = state.logs.some((entry) => entry.type === "electrolyte" && new Date(entry.occurredAt) >= todayStart);
-  const prototypeSeed = isPrototypeSeedState();
-  const totalLabel = prototypeSeed ? "2,0 L" : formatWater(total);
-  const takeCount = prototypeSeed ? 5 : todayWater.length;
+  const totalLabel = formatWater(total);
+  const takeCount = todayWater.length;
   let message = t("noWater");
 
   if (lastWater) {
@@ -523,12 +518,6 @@ function hydrationCard() {
       <div class="wave-bg"><div class="wave-bg-shape w1"></div><div class="wave-bg-shape w2"></div></div>
     </section>
   `;
-}
-
-function isPrototypeSeedState() {
-  if (state.logs.length !== 6) return false;
-  const signature = state.logs.map((entry) => entry.type === "substance" ? entry.substanceId : entry.type).sort().join("|");
-  return signature === "cannabis|ecstasy|electrolyte|water|water|water";
 }
 
 function highlightFirstTime(text) {
@@ -759,7 +748,7 @@ function warningMarkup(warning) {
 
 function timeSeparator(iso) {
   const date = new Date(iso);
-  const today = prototypeNow();
+  const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
   const sameDay = date.toDateString() === today.toDateString();
@@ -774,15 +763,18 @@ function clock(date) {
 }
 
 function relativeLabel(date) {
-  const diff = prototypeNow().getTime() - date.getTime();
+  const diff = Date.now() - date.getTime();
+  if (diff < 0) return clock(date);
   if (diff < 60 * 60 * 1000) return state.lang === "fr" ? `il y a ${Math.max(1, Math.round(diff / 60000))}min` : `${Math.max(1, Math.round(diff / 60000))}m ago`;
   if (diff < 24 * 60 * 60 * 1000) return state.lang === "fr" ? `il y a ${relativeDuration(date, true)}` : `${relativeDuration(date, true)} ago`;
-  const label = date.toDateString() === new Date(prototypeNow().setDate(prototypeNow().getDate() - 1)).toDateString() ? t("yesterday") : timeSeparator(date.toISOString()).split(" · ")[0];
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const label = date.toDateString() === yesterday.toDateString() ? t("yesterday") : timeSeparator(date.toISOString()).split(" · ")[0];
   return `${label} ${date.getHours()}h${String(date.getMinutes()).padStart(2, "0")}`;
 }
 
 function relativeDuration(date) {
-  const minutes = Math.max(1, Math.round((prototypeNow().getTime() - date.getTime()) / 60000));
+  const minutes = Math.max(1, Math.round((Date.now() - date.getTime()) / 60000));
   if (minutes < 60) return `${minutes}min`;
   const hours = Math.floor(minutes / 60);
   const rest = minutes % 60;
@@ -992,6 +984,9 @@ function selectedDate(form, scope) {
   const [hours, minutes] = value.split(":").map(Number);
   const date = new Date();
   date.setHours(hours, minutes, 0, 0);
+  if (date.getTime() > Date.now()) {
+    date.setDate(date.getDate() - 1);
+  }
   return date;
 }
 
@@ -1001,28 +996,15 @@ function selectTimeButton(button) {
   $(`[data-time-custom="${scope}"]`)?.classList.toggle("vis", kind === "other");
 }
 
-function interactionForSubstanceId(substanceId) {
-  const sub = substances[substanceId];
-  const currentIds = [substanceId, sub?.family].filter(Boolean);
-  const recent = state.logs.filter((item) => {
-    if (item.type !== "substance") return false;
-    return Date.now() - new Date(item.occurredAt).getTime() <= 12 * 60 * 60 * 1000;
-  });
-  for (const item of recent) {
-    const previousIds = [item.substanceId, item.family].filter(Boolean);
-    const combined = new Set([...currentIds, ...previousIds]);
-    for (const ruleItem of interactionRules) {
-      if (ruleItem.ids.every((id) => combined.has(id))) return ruleItem;
-    }
-  }
-  return null;
+function isRecentPast(iso, windowHours = 12) {
+  const diff = Date.now() - new Date(iso).getTime();
+  return diff >= 0 && diff <= windowHours * 60 * 60 * 1000;
 }
 
-function interactionFor(entry) {
-  const currentIds = [entry.substanceId, entry.family].filter(Boolean);
+function interactionForSubstanceIds(ids) {
+  const currentIds = ids.filter(Boolean);
   const recent = state.logs.filter((item) => {
-    if (item.type !== "substance") return false;
-    return Date.now() - new Date(item.occurredAt).getTime() <= 12 * 60 * 60 * 1000;
+    return item.type === "substance" && isRecentPast(item.occurredAt);
   });
 
   for (const item of recent) {
@@ -1035,6 +1017,15 @@ function interactionFor(entry) {
     }
   }
   return null;
+}
+
+function interactionForSubstanceId(substanceId) {
+  const sub = substances[substanceId];
+  return interactionForSubstanceIds([substanceId, sub?.family]);
+}
+
+function interactionFor(entry) {
+  return interactionForSubstanceIds([entry.substanceId, entry.family]);
 }
 
 function initWave() {

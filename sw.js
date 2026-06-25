@@ -1,9 +1,9 @@
-const CACHE = "boussole-v19";
+const CACHE = "boussole-v20";
 const ASSETS = [
   "./",
   "./index.html",
-"./styles.css?v=19",
-"./app.js?v=19",
+  "./styles.css",
+  "./app.js",
   "./manifest.webmanifest",
   "./assets/icon.svg"
 ];
