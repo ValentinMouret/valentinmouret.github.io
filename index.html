@@ -67,7 +67,7 @@
       if (SKY[i][0] > h)  { next = SKY[i]; break; }
     }
     var span = next[0] > prev[0] ? next[0] - prev[0] : 24 - prev[0] + next[0];
-    var elapsed = h > prev[0] ? h - prev[0] : 24 - prev[0] + h;
+    var elapsed = h >= prev[0] ? h - prev[0] : 24 - prev[0] + h;
     var t = span > 0 ? elapsed / span : 0;
     return prev.map(function(v, i) { return i === 0 ? h : lerpColor(String(v), String(next[i]), t); });
   }
