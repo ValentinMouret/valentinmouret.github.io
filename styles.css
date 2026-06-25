@@ -102,6 +102,14 @@ a {
   height: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 24px);
 }
 
+.content[data-screen="home"] {
+  padding-bottom: 0;
+}
+
+.content[data-screen="home"] .scroll-end-spacer {
+  height: calc(var(--nav-height) + var(--actions-height) + env(safe-area-inset-bottom, 0px) + 24px);
+}
+
 .content[data-screen="info"] {
   gap: 8px;
   padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 16px);
