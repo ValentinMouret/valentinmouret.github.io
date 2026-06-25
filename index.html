@@ -80,7 +80,7 @@
     if (meta) meta.content = sky[1];
   }
 
-  function tick() { applyTheme(new Date().getHours()); }
+  function tick() { var d = new Date(); applyTheme(d.getHours() + d.getMinutes() / 60); }
   tick();
   setInterval(tick, 60000);
 })();
